@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 
-def logic_projection(entity, correct=True):  # TODO: class
-	'''Данная функкция симулирует проецирование неких сущностей на логическое пространство'''
-	entity_projection = entity
-	return entity_projection
-
 def union(iterable, start=set()):
 	for item in iterable:
 		start |= item
@@ -45,6 +40,13 @@ class Object:
 	form = possible_events = set()  # Возможность объекта вхождения в со-бытия - его форма (2.0141)
 	def __init__(self, possible_events=set()):
 		self.form |= possible_events
+
+class LogicProjection():
+	'''Проекция на логическое пространство'''
+	source = None
+	correct = None
+	def __init__(self, entity, correct=True):
+		self.source = entity
 
 class Interaction:
 	'''Способ взаимодействия между предметами'''
