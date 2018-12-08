@@ -25,3 +25,14 @@ python3 module
 `dog_and_cat_fact = Fact([dog_scares_cat_off])`.
 - Try creating a **world** based on it:
 `world = World([dog_and_cat_fact])`. Of course, a real **world** would have a lot more **facts**, but this is just an example.
+- Try checking that both **objects** form the **substance** of this **world**:
+`dog in world.substance`;
+`cat in world.substance`.
+- Try creating a **picture** of this **world** and checking if it is a **correct representation** of it:
+`world_picture = Picture(world)`; `world_picture <= world`.
+- Try defining **symbols** for **objects** that you have:
+`symbols = [Symbol(dog, 'dog'), Symbol(cat, 'cat')]`.
+- Try making a **sentence** about your **world** using your **symbols** and also checking if it is **correct**:
+`world_sentence = Sentence(world, symbols)`; `world_sentence <= world`.
+- Try getting a **textual representation** of your sentence:
+`print(world_sentence)`.
