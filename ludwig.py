@@ -60,6 +60,8 @@ class LogicalRepresentation():
 		if correct is None:
 			correct = exactness > random.random()
 		self.correct = correct
+	def __le__(self, entity):  # Оператор "<=" (следует воспринимать, как перевернутый знак логического следствия) - проверка, соответствует ли логическое представление действительности
+		return self.correct and entity is self.source
 
 class Interaction:
 	'''Способ взаимодействия между предметами'''
@@ -96,7 +98,7 @@ class Picture(Fact):  # Картина - факт
 	elements = set()  # Объектам в картине соответствуют элементы картины
 	representation = None
 	meaning = None  # Смысл картины
-	correct = None
+	correct = None  # Верна ли картина?
 	def __init__(self, entity, correct=None):
 		self.meaning = entity  # Смысл картины - то, что она изображает
 		self.representation = LogicalRepresentation(entity, correct)
@@ -115,6 +117,8 @@ class Picture(Fact):  # Картина - факт
 		if correct is None:
 			correct = self.representation.correct and intersect((element.correct for element in self.elements), True)
 		self.correct = correct
+	def __le__(self, entity):  # Оператор "<=" (следует воспринимать, как перевернутый знак логического следствия) - проверка, соответствует ли картина действительности
+		return self.correct and entity is self.meaning
 
 class Thought:
 	'''Мысль'''
@@ -133,7 +137,7 @@ class Language:
 		self.sentences = sentences
 
 class Sentence:  # Предложение
-	pass
+	'''Предложене'''
 
 class Symtence:  # Знак-предложение
 	pass
