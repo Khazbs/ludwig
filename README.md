@@ -23,7 +23,9 @@ python3 module
 `dog_scares_cat_off in cat.form`.
 - Try creating a **fact** that claims that this **event** happens:
 `dog_and_cat_fact = Fact([dog_scares_cat_off])`.
-- Try creating a **world** based on it:
+- Try creating a **thought** about this **fact**:
+`thought_about_dog_and_cat = Thought(dog_and_cat_fact)`.
+- Try creating a **world** based on the **fact**:
 `world = World([dog_and_cat_fact])`. Of course, a real **world** would have a lot more **facts**, but this is just an example.
 - Try checking that both **objects** form the **substance** of this **world**:
 `dog in world.substance`;
@@ -36,3 +38,7 @@ python3 module
 `world_sentence = Sentence(world, symbols)`; `world_sentence <= world`.
 - Try getting a **textual representation** of your sentence:
 `print(world_sentence)`.
+
+## Philosophical questions
+- If **The Pure Thought** refers to the simplest thought, the existence of which proves its verity, is it possible to **think The Pure Thought**?
+  - **No**, it is impossible: `Picture(Thought())` fails with an error.
