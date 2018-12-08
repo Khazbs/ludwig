@@ -1,16 +1,26 @@
 #!/usr/bin/env python3
 
+import random
+
 def union(iterable, start=set()):
 	for item in iterable:
 		start |= item
 	return start
 
+def intersect(iterable, start=set()):
+	for item in iterable:
+		start &= item
+	return start
+
 class World:
 	'''Мир'''
 	facts = set()  # Целокупность фактов (1.1)
+	existing_events = set()  # Целокупность существующих событий (2.04)
 	substance = objects = set()  # Объекты образуют субстанцию мира (2.021)
 	def __init__(self, facts):
 		self.facts |= set(facts)
+		for fact in facts:
+			self.existing_events |= fact.events
 		self.substance |= union(union(set(event.structure.keys()) for event in fact.events) for fact in facts)
 
 class Fact:
@@ -27,11 +37,11 @@ class Event:
 			relation.first_object.form |= {self}  # Если объект участвует в событии, то его форма содержит возможность этого события
 			relation.second_object.form |= {self}  # Если объект участвует в событии, то его форма содержит возможность этого события
 			if relation.first_object in self.structure:
-				self.structure[relation.first_object] += relation
+				self.structure[relation.first_object] += [relation]
 			else:
 				self.structure[relation.first_object] = [relation]
 			if relation.second_object in self.structure:
-				self.structure[relation.second_object] += relation ** -1
+				self.structure[relation.second_object] += [relation ** -1]
 			else:
 				self.structure[relation.second_object] = [relation ** -1]
 
@@ -41,12 +51,15 @@ class Object:
 	def __init__(self, possible_events=set()):
 		self.form |= possible_events
 
-class LogicProjection():
-	'''Проекция на логическое пространство'''
+class LogicalRepresentation():
+	'''Логическое представление, которое по умолчанию с некоторой вероятностью, зависящей от "точности", может оказаться ложным'''
 	source = None
 	correct = None
-	def __init__(self, entity, correct=True):
+	def __init__(self, entity, correct=None):
 		self.source = entity
+		if correct is None:
+			correct = exactness > random.random()
+		self.correct = correct
 
 class Interaction:
 	'''Способ взаимодействия между предметами'''
@@ -81,26 +94,37 @@ class Relation:
 class Picture(Fact):  # Картина - факт
 	'''Картина'''
 	elements = set()  # Объектам в картине соответствуют элементы картины
+	representation = None
 	meaning = None  # Смысл картины
-	def __init__(self, entity):
+	correct = None
+	def __init__(self, entity, correct=None):
 		self.meaning = entity  # Смысл картины - то, что она изображает
+		self.representation = LogicalRepresentation(entity, correct)
+		element_correct = True if correct else None
 		if type(entity) is World:
-			for fact in entity.facts:
-				self.events |= fact.events
-			self.elements |= set(map(LogicProjection, entity.substance))
+			self.events |= set(entity.existing_events)
+			self.elements |= set((LogicalRepresentation(obj, element_correct) for obj in entity.substance))
 		elif type(entity) is Event:
 			self.events |= {entity}
-			self.elements |= set(map(LogicProjection, entity.structure))
+			self.elements |= set((LogicalRepresentation(obj, element_correct) for obj in entity.structure.keys()))
 		elif type(entity) is Object:
-			self.elements |= set(map(LogicProjection, entity.form))
+			self.events |= set(entity.form)
+			self.elements |= {LogicalRepresentation(entity, element_correct)}
 		else:
 			raise NotImplementedError
+		if correct is None:
+			correct = self.representation.correct and intersect((element.correct for element in self.elements), True)
+		self.correct = correct
 
-class Thought:  # Мысль
-	pass
+class Thought:
+	'''Мысль'''
+	thought = None
+	def __init__(self, fact):
+		if type(fact) is Fact:
+			self.thought = LogicalRepresentation(fact)
+		else:
+			raise TypeError
 
-class Symbol:  # Знак
-	pass
 
 class Language:
 	'''Язык'''
@@ -113,5 +137,8 @@ class Sentence:  # Предложение
 
 class Symtence:  # Знак-предложение
 	pass
+
+# Волшебные константы
+exactness = 1  # "Точность" мыслящего, то есть вероятность истинности его логического представления
 
 print('--- Ludwig module has been loaded ---')
