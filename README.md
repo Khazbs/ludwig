@@ -40,5 +40,7 @@ python3 module
 `print(world_sentence)`.
 
 ## Philosophical questions
+- Can a **picture** be a **picture of itself**?
+  - **No**, it cannot: if `type(picture)` is `Picture`, `type(picture.meaning)` will never be `Picture`.
 - If **The Pure Thought** refers to the simplest thought, the existence of which proves its verity, is it possible to **think The Pure Thought**?
   - **No**, it is impossible: `Picture(Thought())` fails with an error.
