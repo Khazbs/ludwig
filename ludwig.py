@@ -78,19 +78,35 @@ class Relation:
 		elif power == -1:
 			return Relation(self.second_object, self.first_object, self.interaction ** -1)
 
-class Picture:
+class Picture(Fact):  # Картина - факт
 	'''Картина'''
-	elements = None  # Объектам в артине соответствуют элементы картины
-	meaning = None  # Смысл картины - то, что она изображает
-	def __init(self, world):
-		self.meaning = world  # Картина - модель действительности
-		self.elements = set(map(logic_projection, world.substance))  # ...в логическом пространстве
+	elements = set()  # Объектам в картине соответствуют элементы картины
+	meaning = None  # Смысл картины
+	def __init__(self, entity):
+		self.meaning = entity  # Смысл картины - то, что она изображает
+	if type(entity) is World:
+		for fact in entity.facts:
+			self.events |= fact.events
+		self.elements |= set(map(LogicProjection, entity.substance))
+	elif type(entity) is Event:
+		self.events |= {entity}
+		self.elements |= set(map(LogicProjection, entity.structure))
+	elif type(entity) is Object:
+		self.elements |= set(map(LogicProjection, entity.form))
+	else:
+		raise NotImplementedError
 
 class Thought:  # Мысль
 	pass
 
 class Symbol:  # Знак
 	pass
+
+class Language:
+	'''Язык'''
+	sentences = list()  # Целокупность предложений
+	def __init__(self, sentences):
+		self.sentences = sentences
 
 class Sentence:  # Предложение
 	pass
