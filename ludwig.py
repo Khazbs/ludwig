@@ -84,17 +84,17 @@ class Picture(Fact):  # Картина - факт
 	meaning = None  # Смысл картины
 	def __init__(self, entity):
 		self.meaning = entity  # Смысл картины - то, что она изображает
-	if type(entity) is World:
-		for fact in entity.facts:
-			self.events |= fact.events
-		self.elements |= set(map(LogicProjection, entity.substance))
-	elif type(entity) is Event:
-		self.events |= {entity}
-		self.elements |= set(map(LogicProjection, entity.structure))
-	elif type(entity) is Object:
-		self.elements |= set(map(LogicProjection, entity.form))
-	else:
-		raise NotImplementedError
+		if type(entity) is World:
+			for fact in entity.facts:
+				self.events |= fact.events
+			self.elements |= set(map(LogicProjection, entity.substance))
+		elif type(entity) is Event:
+			self.events |= {entity}
+			self.elements |= set(map(LogicProjection, entity.structure))
+		elif type(entity) is Object:
+			self.elements |= set(map(LogicProjection, entity.form))
+		else:
+			raise NotImplementedError
 
 class Thought:  # Мысль
 	pass
