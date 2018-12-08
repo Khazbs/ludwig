@@ -54,14 +54,14 @@ class Object:
 class LogicalRepresentation():
 	'''Логическое представление, которое по умолчанию с некоторой вероятностью, зависящей от "точности", может оказаться ложным'''
 	source = None
-	correct = None
+	_correct = None
 	def __init__(self, entity, correct=None):
 		self.source = entity
 		if correct is None:
 			correct = exactness > random.random()
-		self.correct = correct
+		self._correct = correct
 	def __le__(self, entity):  # Оператор "<=" (следует воспринимать, как перевернутый знак логического следствия) - проверка, соответствует ли логическое представление действительности
-		return self.correct and entity is self.source
+		return self._correct and entity is self.source
 
 class Interaction:
 	'''Способ взаимодействия между предметами'''
@@ -98,7 +98,7 @@ class Picture(Fact):  # Картина - факт
 	elements = set()  # Объектам в картине соответствуют элементы картины
 	representation = None
 	meaning = None  # Смысл картины
-	correct = None  # Верна ли картина?
+	_correct = None  # Верна ли картина? Согласно трактату Витгенштейна, по самой картине нельзя судить, врена ли она - необходимо сопоставить ее с действительностью. К сожалению, реализовать такое сопоставление не удалось, поэтому верность картины хранится во "внутреннем" поле класса Picture
 	def __init__(self, entity, correct=None):
 		self.meaning = entity  # Смысл картины - то, что она изображает
 		self.representation = LogicalRepresentation(entity, correct)
@@ -115,10 +115,10 @@ class Picture(Fact):  # Картина - факт
 		else:
 			raise NotImplementedError
 		if correct is None:
-			correct = self.representation.correct and intersect((element.correct for element in self.elements), True)
-		self.correct = correct
+			correct = self.representation <= entity and intersect((element._correct for element in self.elements), True)
+		self._correct = correct
 	def __le__(self, entity):  # Оператор "<=" (следует воспринимать, как перевернутый знак логического следствия) - проверка, соответствует ли картина действительности
-		return self.correct and entity is self.meaning
+		return self._correct and entity is self.meaning
 
 class Thought:
 	'''Мысль'''
@@ -129,18 +129,31 @@ class Thought:
 		else:
 			raise TypeError
 
-
 class Language:
 	'''Язык'''
 	sentences = list()  # Целокупность предложений
 	def __init__(self, sentences):
 		self.sentences = sentences
 
-class Sentence:  # Предложение
-	'''Предложене'''
+class Symbol:
+	'''Знак'''
+	source = None  # Объект, который представляет знак
+	text_repr = None  # Текстовое представление символа
+	def __init__(self, source, text_repr):
+		self.source = source
+		self.text_repr = str(text_repr)
+	def __repr__(self):
+		return self.text_repr if self.text_repr is not None else str(self.source)
 
-class Symtence:  # Знак-предложение
-	pass
+class Sentence(Picture):  # Предложение - картина действительности
+	'''Предложение'''
+	symbols = dict()  # Объекты могут быть замещены знаками
+	def __init__(self, entity, symbols):
+		super().__init__(entity)
+		for symbol in symbols:
+			self.symbols[symbol.source] = symbol
+	def __repr__(self):
+			return "; ".join(", ".join(" & ".join(str(self.symbols[relation.first_object]) + " " + str(relation.interaction) + " " + str(self.symbols[relation.second_object]) for relation in relations) for relations in event.structure.values()) for event in self.events)
 
 # Волшебные константы
 exactness = 1  # "Точность" мыслящего, то есть вероятность истинности его логического представления
