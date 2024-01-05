@@ -1,7 +1,8 @@
 repo_name: Khazbs/ludwig
 report_id: d00314ee46ce6043a3621dbe88a44cbf
+version: 0.1
 repo_type: Public
-timestamp: '2023-11-10T15:13:50+00:00'
+timestamp: '2024-01-05T08:53:18+00:00'
 requested_by: Khazbs
 provider: github
 branch: master
@@ -16,6 +17,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/Khazbs/ludwig
   detection_source: Repo Metadata
 - name: Git
   description: Fast, scalable, distributed revision control system
@@ -25,6 +27,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/Khazbs/ludwig
   detection_source: Repo Metadata
 - name: Shell
   description: A shell is a text-based terminal, used for manipulating programs and
@@ -35,4 +38,5 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/Khazbs/ludwig
   detection_source: Repo Metadata
